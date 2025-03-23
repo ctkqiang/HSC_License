@@ -1,0 +1,40 @@
+@startuml 车牌识别流程
+
+actor 用户
+participant "前端界面" as FE
+participant "FastAPI服务器" as API
+participant "车牌识别器" as LPR
+participant "文字识别器" as OCR
+
+用户 -> FE: 上传图片
+activate FE
+
+FE -> API: POST /api/recognize_license_plate/
+activate API
+
+API -> LPR: 识别车牌(图像)
+activate LPR
+
+LPR -> LPR: 转换为灰度图像
+LPR -> LPR: 应用高斯模糊
+LPR -> LPR: 执行边缘检测
+LPR -> LPR: 查找轮廓
+LPR -> LPR: 筛选车牌轮廓
+LPR -> LPR: 提取车牌区域
+
+LPR -> OCR: 文字识别(车牌区域)
+activate OCR
+OCR --> LPR: 返回识别文本
+deactivate OCR
+
+LPR --> API: 返回车牌号码
+deactivate LPR
+
+API --> FE: 返回JSON响应
+deactivate API
+
+FE -> FE: 更新界面显示
+FE --> 用户: 显示识别结果
+deactivate FE
+
+@enduml

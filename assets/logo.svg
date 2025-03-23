@@ -1,0 +1,37 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="#4C1D95" opacity="0.1"/>
+  
+  <!-- Camera Lens Design -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#6D28D9" stroke-width="4"/>
+  <circle cx="100" cy="100" r="55" fill="none" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="100" cy="100" r="40" fill="none" stroke="#8B5CF6" stroke-width="1"/>
+  
+  <!-- License Plate Frame -->
+  <rect x="60" y="85" width="80" height="30" rx="4" fill="#F3F4F6" stroke="#4C1D95" stroke-width="2"/>
+  
+  <!-- Abstract Chinese Characters (simplified) -->
+  <path d="M70 95 h20 v10 h-20 z" fill="#4C1D95" opacity="0.8"/>
+  <path d="M95 95 h10 v10 h-10 z" fill="#4C1D95" opacity="0.8"/>
+  <path d="M110 95 h10 v10 h-10 z" fill="#4C1D95" opacity="0.8"/>
+  
+  <!-- Scanning Line Animation -->
+  <line x1="60" y1="100" x2="140" y2="100" stroke="#7C3AED" stroke-width="1">
+    <animate 
+      attributeName="y1" 
+      values="85;115;85" 
+      dur="2s" 
+      repeatCount="indefinite"/>
+    <animate 
+      attributeName="y2" 
+      values="85;115;85" 
+      dur="2s" 
+      repeatCount="indefinite"/>
+  </line>
+  
+  <!-- Focus Points -->
+  <circle cx="70" cy="75" r="2" fill="#7C3AED"/>
+  <circle cx="130" cy="75" r="2" fill="#7C3AED"/>
+  <circle cx="70" cy="125" r="2" fill="#7C3AED"/>
+  <circle cx="130" cy="125" r="2" fill="#7C3AED"/>
+</svg>

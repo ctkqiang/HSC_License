@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>车牌识别系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-purple-50 to-pink-50 min-h-screen flex items-center justify-center p-4"
+    style="font-family: 'Noto Sans SC', sans-serif">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-md w-full border border-purple-100">
+      <div class="flex items-center justify-center mb-6">
+        <svg
+          class="w-10 h-10 text-purple-600 mr-3"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        <h1 class="text-3xl font-bold text-center text-purple-800">
+          车牌图片上传
+        </h1>
+      </div>
+
+      <div class="bg-purple-50 rounded-lg p-4 mb-6">
+        <p class="text-sm text-purple-700">
+          📋 支持的图片格式：JPG、PNG、JPEG、WEBP
+        </p>
+        <p class="text-sm text-purple-700 mt-1">📱 建议图片大小不超过35MB</p>
+      </div>
+
+      <form
+        id="uploadForm"
+        action="/api/recognize_license_plate/"  
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-6"
+      >
+        <div class="flex flex-col items-center space-y-4">
+          <!-- Upload state -->
+          <div id="uploadState" class="w-full">
+            <label
+              class="w-full flex flex-col items-center px-4 py-8 bg-white text-pink-500 rounded-xl shadow-lg border-2 border-dashed border-pink-300 cursor-pointer hover:bg-pink-50 hover:border-pink-500 transition-all duration-300"
+            >
+              <svg
+                class="w-12 h-12 mb-2"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"
+                />
+              </svg>
+              <span class="mt-2 text-base font-medium">点击或拖拽文件到此处</span>
+              <span class="text-sm text-gray-500 mt-1">选择车牌图片</span>
+              <input type="file" name="file" class="hidden" accept="image/*" />
+            </label>
+          </div>
+
+          <!-- Loading state -->
+          <div id="loadingState" class="hidden w-full">
+            <div class="w-full flex flex-col items-center px-4 py-8 bg-white rounded-xl shadow-lg border-2 border-purple-200">
+              <div class="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></div>
+              <span class="text-purple-600 font-medium">正在上传图片...</span>
+            </div>
+          </div>
+
+          <!-- Preview state -->
+          <div id="preview" class="hidden w-full">
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-4">
+              <img id="imagePreview" class="w-full h-48 object-contain rounded-lg mb-4" />
+              <div class="text-center">
+                <button id="resetUpload" class="text-sm text-purple-600 hover:text-purple-800">
+                  重新上传
+                </button>
+              </div>
+            </div>
+            <div id="result" class="hidden">
+              <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-purple-100 shadow-lg">
+                <div class="flex items-center mb-4">
+                  <svg class="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 class="text-lg font-bold text-gray-800">识别结果</h3>
+                </div>
+                <div id="resultContent" class="text-center py-3">
+                  <p class="text-3xl font-bold text-purple-800 mb-2"></p>
+                  <p class="text-sm text-gray-500">识别时间：<span id="recognizeTime"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="w-full px-6 py-3 text-white text-lg font-medium bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-lg hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transform hover:scale-[1.02] transition-all duration-300">
+            上传并识别
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        © 2025 车牌识别系统 | 钟智强
+      </div>
+    </div>
+  </body>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('uploadForm');
+        const fileInput = form.querySelector('input[type="file"]');
+        const uploadState = document.getElementById('uploadState');
+        const loadingState = document.getElementById('loadingState');
+        const preview = document.getElementById('preview');
+        const imagePreview = document.getElementById('imagePreview');
+        const result = document.getElementById('result');
+        const resetUpload = document.getElementById('resetUpload');
+
+        // 处理文件选择
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    result.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 处理表单提交
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const resultContent = document.querySelector('#resultContent p:first-child');
+            const recognizeTime = document.getElementById('recognizeTime');
+
+            try {
+                // 显示加载状态
+                result.classList.remove('hidden');
+                resultContent.innerHTML = '<div class="animate-pulse">正在识别中...</div>';
+                
+                // 发送请求
+                const response = await fetch('/api/recognize_license_plate/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                // 更新识别时间
+                const now = new Date();
+                recognizeTime.textContent = now.toLocaleString('zh-CN');
+
+                // 处理响应结果
+                if (data.success) {
+                    resultContent.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <span class="text-sm text-green-600 mb-2">识别成功</span>
+                            <span class="text-3xl font-bold text-purple-800">${data.data.license_plate_number}</span>
+                        </div>
+                    `;
+                } else {
+                    resultContent.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <span class="text-sm text-red-600 mb-2">识别失败</span>
+                            <span class="text-base text-red-500">${data.error}</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // 处理错误情况
+                resultContent.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <span class="text-sm text-red-600 mb-2">系统错误</span>
+                        <span class="text-base text-red-500">请稍后重试</span>
+                    </div>
+                `;
+            }
+        });
+    });
+  </script>
+</body>
+</html>
